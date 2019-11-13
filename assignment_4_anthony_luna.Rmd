@@ -1,0 +1,84 @@
+---
+title: "Assignment 4 - A working Title"
+author: "Anthony Luna"
+date: "11/9/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+```{r}
+library(tidyverse)
+library(janitor)
+library(kableExtra)
+library(scales)
+library(here)
+```
+
+### Introduction
+
+### Data and Methods
+
+### Results
+
+#### Results A: Visually Explore changes in annual lobster abundance (counts) by site 
+
+```{r}
+lob_raw <- read_csv(here("data","lobster_abundance_sbc_lter.csv"), na = "-99999") %>% 
+  clean_names()
+
+lob_year_site <- lob_raw %>% 
+  group_by(year,site) %>% 
+  summarise(count = sum(count)) %>% 
+  mutate(cfgn_code = case_when(site %in% c("NAPL","IVEE")~"MPA",TRUE~"non-MPA"))
+
+lob_year_site_plot <- ggplot(data=lob_year_site, aes(x=year,y=count))+
+  geom_line(aes(color = site))+
+  facet_wrap(~cfgn_code)+
+  labs(title = "Population of Lobsters over time",
+    subtitle = "2012-2018",
+    caption = "Observed lobstercounts from 2012 to 2018 in 5 locations off the coast of Santa Barbara",
+    x = "Year",
+    y = "Count of Lobsters",
+    col = "Site") + 
+    theme_minimal() +  
+    # This centers our title and subtitle  
+    theme(plot.title = element_text(hjust= 0.5),
+          plot.subtitle = element_text(hjust= 0.5))
+lob_year_site_plot
+```
+
+
+
+#### Results B: Visually explore lobster size distribution shifts by comparing lobster sizes in 2012 and 2018
+
+```{r}
+lob_size <- lob_raw %>% 
+  filter(!is.na(size_mm)) %>% 
+  uncount(weights = count) %>% 
+  filter(year==2018|year==2012) 
+
+ggplot(lob_size,aes(x=size_mm,fill=year))+
+  geom_histogram( color="#e9ecef", alpha=0.6, position = 'identity') +
+    scale_fill_manual(values=c("#69b3a2", "#404080")) +
+  facet_wrap(~site,scales = "free")
+```
+```{r}
+lob_size <- lob_raw %>% 
+  filter(!is.na(size_mm)) %>% 
+  uncount(weights = count) %>% 
+  filter(year==2012) 
+
+ggplot(lob_size,aes(x=size_mm,fill=year))+
+  geom_histogram( color="#e9ecef", alpha=0.6, position = 'identity') +
+   # scale_fill_manual(values=c("#69b3a2", "#404080")) +
+  facet_wrap(~site)
+```
+
+
+#### Results C: Compare mean lobster sizes at MPA vs. non-MPA status sites in 2012 and 2018
+
+### Summary
+
+### References

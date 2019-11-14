@@ -38,7 +38,7 @@ lob_year_site_plot <- ggplot(data=lob_year_site, aes(x=year,y=count))+
   facet_wrap(~cfgn_code)+
   labs(title = "Population of Lobsters over time",
     subtitle = "2012-2018",
-    caption = "Observed lobstercounts from 2012 to 2018 in 5 locations off the coast of Santa Barbara",
+    caption = "Observed lobster counts from 2012 to 2018 in 5 locations off the coast of Santa Barbara",
     x = "Year",
     y = "Count of Lobsters",
     col = "Site") + 
